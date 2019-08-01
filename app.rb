@@ -38,9 +38,19 @@ end
 post '/new' do
 	content = params[:content]
 	if content.length <= 0
-		@error = "Type text"
+		@error = "Type post text"
 		return erb :new
 	end
 
+	# сохранение данных в бд
+	init_db
+	@db.execute 'insert into Posts (content, created_date) values (?, datetime())', [content]
+	redirect '/posts'
 	erb "Your typed: #{content}"
+end
+
+get '/posts' do
+	# выводим список постов из бд
+	@results = @db.execute 'select * from Posts order by id desc'
+	erb :index
 end
