@@ -78,6 +78,7 @@ get '/details/:post_id' do
 	# выбираем коментарии для нашего поста
 	@comments = @db.execute 'select * from Comments where post_id = ?', [post_id]
 
+
 	# возвращаем представление details.erb
 	erb :details
 end
@@ -85,13 +86,23 @@ end
 # обработчик post-запроса /details/...
 # (браузер отправляет данные на сервер, а мы ипринимаем)
 post '/details/:post_id' do
+
 	post_id = params[:post_id]
 	content = params[:content]
-	# if content.length <= 0
-	# 	@error = "Type post text"
-	#
-	# 	return erb :details
-	# end
+	# получаем список постов
+	results = @db.execute 'select * from Posts where id = ?', [post_id]
+
+	# выбираем этот один пост в переменную @row
+	@row = results[0]
+
+	# выбираем коментарии для нашего поста
+	@comments = @db.execute 'select * from Comments where post_id = ?', [post_id]
+
+	if content.length <= 0
+		@error = "Type the text"
+		return erb :details
+	end
+
 	@db.execute 'insert into Comments (content, created_date, post_id) values (?, datetime(), ?)', [content, post_id]
 	erb "You type comment: #{content}"
 end
