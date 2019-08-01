@@ -6,3 +6,18 @@
     Added at <%= @row['created_date'] %>
     <br />
   </p>
+
+  <% @comments.each do |hh|%>
+    <p span style="font-size: 75%; color: #999">
+      <%= hh['Content']%>
+        <br />
+      <%= hh['created_date'] %>
+    </p>
+  <% end %>
+
+<h4>Comments:</h4>
+  <form action="/details/<%= @row['id'] %>" method="POST" role="form">
+    <textarea name="content" class="form-control" style="width: 400px" rows="6" placeholder="Add comments"></textarea>
+    <br>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
